@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <style>
+        div {
+            display: flex;
+            padding-bottom: 10px;
+        }
+        button {
+            margin-right: 5px;
+        }
+        input {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <input type="text" id="num1">
+</div>
+<div>
+    <button onclick="klik_angka('0')">0</button>
+    <button onclick="klik_angka('1')">1</button>
+    <button onclick="klik_angka('2')">2</button>
+    <button onclick="klik_angka('3')">3</button>
+    <button onclick="klik_angka('4')">4</button>
+    <button onclick="klik_angka('5')">5</button>
+    <button onclick="klik_angka('6')">6</button>
+    <button onclick="klik_angka('7')">7</button>
+    <button onclick="klik_angka('8')">8</button>
+    <button onclick="klik_angka('9')">9</button>
+</div>
+<div>
+    <button onclick="klik_angka('+')">+</button>
+    <button onclick="klik_angka('-')">-</button>
+    <button onclick="klik_angka('*')">*</button>
+    <button onclick="klik_angka('/')">/</button>
+    <button onclick="ngitung()">=</button>
+    <button onclick="hapus()">Clear</button>
+</div>
+<div>
+    <p>Hasil: </p>
+    <p id="result"></p>
+</div>
+<script>
+    var inputVal = "";
+
+    function klik_angka(value){
+        var num1 = document.getElementById("num1");
+        num1.value += value;
+        inputVal += value;
+    }
+
+    function ngitung(){
+        var num1 = document.getElementById("num1");
+        var result = klik_operator(inputVal);
+        document.getElementById("result").innerHTML = result;
+        inputVal = result.toString();
+        num1.value = inputVal;
+    }
+
+    function hapus(){
+        var num1 = document.getElementById("num1");
+        num1.value = "";
+        inputVal = "";
+        document.getElementById("result").innerHTML = "";
+    }
+
+    function klik_operator(expression){
+        var operators = {
+            "+": function (a, b){
+                return a + b
+            },
+            "-": function (a, b){
+                return a - b
+            },
+            "*": function (a, b){
+                return a * b
+            },
+            "/": function (a, b){
+                return a / b
+            }
+        };
+
+        var tokens = expression.split(/([+\-*/])/);
+        var values = [];
+        var currentOperator = null;
+        for (var i = 0; i < tokens.length; i++){
+            var token = tokens[i];
+            if (token in operators){
+                currentOperator = operators[token];
+            }
+            else{
+                var value = parseFloat(token);
+                if (!isNaN(value)) {
+                    values.push(value);
+                }
+            }
+            if (currentOperator && values.length >= 2){
+                var b = values.pop();
+                var a = values.pop();
+                var result = currentOperator(a, b);
+                values.push(result);
+                currentOperator = null;
+            }
+        }
+
+    return values[0];
+    }
+
+</script>
+</body>
+</html>
